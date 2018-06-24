@@ -160,10 +160,10 @@ SELECT * FROM Customers WHERE Country='Sweden';
 ## <a name="section-h"></a>8) Tables 
 
 ```
-First Header | Second Header
------------- | -------------
-Content from cell 1 | Content from cell 2
-Content in the first column | Content in the second column
+|First Header | Second Header |
+|------------ | ------------- |
+| Content from cell 1 | Content from cell 2 |
+| Content in the first column | Content in the second column |
 ```
 
 First Header | Second Header
