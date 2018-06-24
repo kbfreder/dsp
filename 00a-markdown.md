@@ -174,3 +174,5 @@ Content in the first column | Content in the second column
 ## <a name="section-r"></a>References 
 
 [Markdown Help](http://mathoverflow.net/editing-help)
+
+>> KF note: got some, but not all of this to work in nvALT. need to use a different editor
