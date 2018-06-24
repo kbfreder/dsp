@@ -94,7 +94,7 @@ Code for emoji's:
 Rendered emoji's:  
 :fireworks:  
 :smiley:  
-:watermelon:  
+:pig:  
  
 ---
 
@@ -119,8 +119,10 @@ print "hello moon"
 
 Block code that is **python**-specific:  
 ```{python}
+num = max(100, 10)
 print("hello world!")
 print("hello moon")
+
 ```
 
 #### bash or console
