@@ -136,3 +136,5 @@ The process above is designed to be accessible to anyone regardless of backgroun
 To get a complete understanding of `git`, you should read [Pro Git](http://git-scm.com/book/en/v2). It's available free online or as a printed book.
 
 [<img src="img/pro_git.png" title="Pro Git" width="250" />](http://git-scm.com/book/en/v2)
+
+>> I'm git'ing the hang of this!
