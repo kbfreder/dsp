@@ -1,4 +1,4 @@
-# Jupyter Notebook
+/ds/metis/github/prework/dsp# Jupyter Notebook
 
 ## Introduction
 The Jupyter notebook is an interactive computational environment, in which you can combine code, execution, rich text, LaTeX, mathematics, plots and rich media.  
@@ -15,6 +15,7 @@ Review the [installation instructions](resources/jupyter_notebook_1_install.md) 
 >### Part 2:  Using the Notebook 
 Review the [notes on using Jupyter Notebook](resources/jupyter_notebook_2_use.md) and create a test notebook.  Do some practice and get accustomed to navigating around the notebook.  
 
+>> I've been using Jupyter for a bit. It's great!
  
  
  
