@@ -36,8 +36,7 @@ What do the following commands do:
 `ls -t`
 `ls -Glp`
 '''
->> 
-ls: list of files in current dir
+>> ls: list of files in current dir
 ls -a: includes hidden files
 ls -l: long list
 ls -lh: as above, but includes file size unit
