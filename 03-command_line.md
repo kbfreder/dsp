@@ -36,13 +36,14 @@ What do the following commands do:
 `ls -t`
 `ls -Glp`
 '''
->> ls: list of files in current dir
-ls -a: includes hidden files
-ls -l: long list
-ls -lh: as above, but includes file size unit
-ls -lah: long list, including hidden files, showing file size unit
-ls -t: sort by time modified
-ls -Glp: colorized output, in long form, with slash after filename if it is a directory
+>> 
+- ls: list of files in current dir
+- ls -a: includes hidden files
+- ls -l: long list
+- ls -lh: as above, but includes file size unit
+- ls -lah: long list, including hidden files, showing file size unit
+- ls -t: sort by time modified
+- ls -Glp: colorized output, in long form, with slash after filename if it is a directory
 
 '''
 ---
@@ -51,11 +52,12 @@ ls -Glp: colorized output, in long form, with slash after filename if it is a di
 
 Explore these other [ls options](http://www.techonthenet.com/unix/basic/ls.php) and pick 5 of your favorites:
 
->> -d: display only directories
--r: display in reverse order
--R: display subdirectories as well (!!)
--u: display by access time
--1: new line for each entry
+>>
+- -d: display only directories
+- -r: display in reverse order
+- -R: display subdirectories as well (!!)
+- -u: display by access time
+- -1: new line for each entry
 
 ---
 
@@ -63,6 +65,7 @@ Explore these other [ls options](http://www.techonthenet.com/unix/basic/ls.php) 
 
 What does `xargs` do? Give an example of how to use it.
 
->> It builds and executes commands from standard input
->> ex: remove files in 'tmp' folder older than 2 weeks: 
->> find /tmp -mtime +14 | xargs rm
+>> 
+It builds and executes commands from standard input\
+ex: remove files in 'tmp' folder older than 2 weeks: 
+`find /tmp -mtime +14 | xargs rm
