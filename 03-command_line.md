@@ -68,4 +68,4 @@ What does `xargs` do? Give an example of how to use it.
 >> 
 It builds and executes commands from standard input\
 ex: remove files in 'tmp' folder older than 2 weeks: 
-`find /tmp -mtime +14 | xargs rm
+`find /tmp -mtime +14 | xargs rm`
