@@ -24,3 +24,15 @@ thinkplot.Pmfs([actual_pmf, bias_pmf])
 thinkplot.Config(xlabel='# children in family', ylabel='probability')
 ```
 ![Image of plot](https://github.com/kbfreder/dsp/blob/master/statistics/3-1-fig.png)
+
+We expect the PMFs to align for n=1 children.
+
+
+The actual vs biased means:
+```
+print('Actual mean: %.2f' % (actual_pmf.Mean()))
+print('Biased mean: %.2f' % (bias_pmf.Mean()))
+
+Actual mean: 1.02
+Biased mean: 2.40
+```
