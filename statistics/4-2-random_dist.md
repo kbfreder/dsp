@@ -14,7 +14,7 @@ samp2_pmf = thinkstats2.Pmf(sample2)
 thinkplot.Pmf(samp2_pmf)
 ```
 
-![PMF Figure](4-2_PMF-Fig.png)
+![PMF Figure](4-2-PMF_Fig.png)
 
 The PMF is so uniform that it appears like a block. However, it is hard to see this. Also, the probabilities are extremely low; note that the y-axis maximum is only 0.001.
 
@@ -24,6 +24,6 @@ The CDF yields a better way to examine a uniform distribution:
 samp2_cdf = thinkstats2.Cdf(sample2)
 thinkplot.Cdf(samp2_cdf)
 ```
-![CDF Figure](4-2_CDF-Fig.png)
+![CDF Figure](4-2-CDF_Fig.png)
 
 The CDF is a straight line for uniform distributions.
