@@ -235,6 +235,56 @@ The following exercises are optional, but we highly encourage you to complete th
 
 ### Q9. [Think Stats Chapter 6 Exercise 1](statistics/6-1-household_income.md) (skewness of household income)
 
+**The Problem**
+
+Compute the median, mean, skewness and Pearson’s skewness of the [Interpolated] sample. What fraction of households reports a taxable income below the mean? How do the results depend on the assumed upper bound?
+
+**My Answer**
+```Python
+# load modules and data
+import thinkstats2
+import numpy as np
+import hinc
+
+income_df = hinc.ReadData()
+log_sample = InterpolateSample(income_df, log_upper=6.0)
+sample = np.power(10, log_sample)
+cdf = thinkstats2.Cdf(sample)
+
+# Compute statistics
+sample.mean(), np.median(sample)
+(74278.707531187203, 51226.933065623722)
+
+thinkstats2.Skewness(sample), thinkstats2.PearsonMedianSkewness(sample)
+(4.9499202444295829, 0.7361258019141782)
+
+# Fraction of household with income below mean:
+cdf[sample.mean()]
+0.66000587956687196
+```
+The assumed upper-bound will impact the mean, standard deviation, and skew. For example, let's re-compute the sample with a higher upper-bound, e.g. 10 million:
+```Python
+new_log_sample = InterpolateSample(income_df, log_upper = 7.0)
+new_sample = np.power(10, new_log_sample)
+new_cdf = thinkstats2.Cdf(new_sample)
+
+thinkstats2.PearsonMedianSkewness(new_sample), thinkstats2.PearsonMedianSkewness(sample)
+(0.39156450927742087, 0.7361258019141782)
+
+new_sample.mean(), sample.mean()
+(124267.39722164697, 74278.707531187203)
+
+np.std(new_sample), np.std(sample)
+(559608.50137434725, 93946.929963478353)
+
+np.median(new_sample), np.median(sample)
+(51226.933065623722, 51226.933065623722)
+
+```
+
+The skew is actually reduced in our higher-upper-bound sample. While the mean is higher (by 3-fold), the standard deviation is also higher (by 5-fold). (The medians are the same.)
+
+
 ### Q10. [Think Stats Chapter 8 Exercise 3](statistics/8-3-scoring.md) (scoring)
 
 ### Q11. [Think Stats Chapter 9 Exercise 2](statistics/9-2-resampling.md) (resampling)
