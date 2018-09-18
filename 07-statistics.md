@@ -137,7 +137,7 @@ thinkplot.Config(xlabel='value', ylabel='PMF',
 
 ![PMF Figure](4-2-PMF_Fig.png)
 
-The PMF looks like a block. We would expect a uniform distribution to yield a step function for its PMF (or square/rectangle when plotted as a bar chart). However, note that the probabilities are extremely low because of the large number of values (1000) in our dataset; the maximum probability is only 0.001.
+The PMF looks like a block. We would expect a uniform distribution to yield a step function for its PMF. However, note that the probabilities are extremely low because of the large number of values (1000) in our dataset; the maximum probability is only 0.001.
 
 The CDF yields a better way to examine a uniform distribution for large number of values:
 
@@ -164,16 +164,17 @@ Generate an analytic normal distribution using the mean (178 cm) and standard de
 import scipy.stats as stats
 
 dist = stats.norm(loc=178, scale=7.7)
-
-# convert heights to centimeters:
-blue_min_ht = (5*12 + 10) * 2.54   
-blue_max_ht = (6*12 + 1) * 2.54
 ```
 The percent of men between 5'10" and 6'1" is equal to the difference in the evaluation of the CDF at these values:
 ```Python
+# convert heights to centimeters:
+blue_min_ht = (5*12 + 10) * 2.54   
+blue_max_ht = (6*12 + 1) * 2.54
+
 dist.cdf(blue_max_ht) - dist.cdf(blue_min_ht)
 0.34274683763147457
 ```
+34% of men fall in this height range.
 
 
 ### Q5. Bayesian (Elvis Presley twin)
@@ -182,43 +183,60 @@ dist.cdf(blue_max_ht) - dist.cdf(blue_min_ht)
 
 *Elvis Presley had a twin brother who died at birth.  What is the probability that Elvis was an identical twin? Assume we observe the following probabilities in the population: fraternal twin is 1/125 and identical twin is 1/300.*  
 
+**My response:**
+
 Bayes' Theorem states:
 
 P(A|B) = (P(B|A)/P(B)) x P(A)
 
 Or, in words: the posterior probability P(A|B) is equal to the prior probability P(A) times the likelihood ratio P(B|A)/P(B).
 
-Let
-- A = Elvis had an identical twin.
-  - P(A) = 1/125
-- B = Elvis had a twin.
-  - P(B) = 1/125 + 1/300 = 17/1500
-- B|A = the probability that Elvis had a twin, given that he had an identical twin
-  - P(B|A)= 1
 
-P(A|B) = 1/(17/1500) x 1/300 = 1500/17 x 1/300 = 5/17 = 29.4%
+We want to find P(A|B) = Elvis had an identical twin, given that he had a male twin.
+- P(A) = Elvis had an identical twin = 1/300
+- P(B) = Elvis had a male twin = sum of:
+  - Probability of fraternal male twin =  1/125 x 0.5 = 1/250
+  - Probability of identical male twin =  1/300
+  - sum = 11/1500
+- P(B|A) = the probability that Elvis had a male twin, given that he had an identical twin = 1
+
+Thus:
+
+P(A|B) = 1/(11/1500) x 1/300 = 1500/11 x 1/300 = 5/11 = 45.4%
 
 ---
 
 ### Q6. Bayesian &amp; Frequentist Comparison  
-How do frequentist and Bayesian statistics compare?
+*How do frequentist and Bayesian statistics compare?*
 
->> REPLACE THIS TEXT WITH YOUR RESPONSE
+Frequentist:
+- The data are random.
+- Parameters are fixed; they are presented with confidence intervals.
+  - probability of the data, given the null hypothesis (H0)
 
----
+
+
+
+Bayesian stats:
+- The data are fixed.
+- Parameters are random; they are presented with probability intervals.
+  - probability of H0 given the data.
+- require prior knowledge of the distribution. If not explicitly provided, it must be assumed or estimated. This can be subjective and can impact results
 
 ## <a name="section-e"></a>5.  Optional Exercises
 
 The following exercises are optional, but we highly encourage you to complete them if you have the time.
 
 ### Q7. [Think Stats Chapter 7 Exercise 1](statistics/7-1-weight_vs_age.md) (correlation of weight vs. age)
-In this exercise, you will compute the effect size of correlation.  Correlation measures the relationship of two variables, and data science is about exploring relationships in data.    
+*In this exercise, you will compute the effect size of correlation.  Correlation measures the relationship of two variables, and data science is about exploring relationships in data.*   
 
 ### Q8. [Think Stats Chapter 8 Exercise 2](statistics/8-2-sampling_dist.md) (sampling distribution)
-In the theoretical world, all data related to an experiment or a scientific problem would be available.  In the real world, some subset of that data is available.  This exercise asks you to take samples from an exponential distribution and examine how the standard error and confidence intervals vary with the sample size.
+*In the theoretical world, all data related to an experiment or a scientific problem would be available.  In the real world, some subset of that data is available.  This exercise asks you to take samples from an exponential distribution and examine how the standard error and confidence intervals vary with the sample size.*
 
 ### Q9. [Think Stats Chapter 6 Exercise 1](statistics/6-1-household_income.md) (skewness of household income)
+
 ### Q10. [Think Stats Chapter 8 Exercise 3](statistics/8-3-scoring.md) (scoring)
+
 ### Q11. [Think Stats Chapter 9 Exercise 2](statistics/9-2-resampling.md) (resampling)
 
 ---
