@@ -230,6 +230,67 @@ The following exercises are optional, but we highly encourage you to complete th
 ### Q7. [Think Stats Chapter 7 Exercise 1](statistics/7-1-weight_vs_age.md) (correlation of weight vs. age)
 *In this exercise, you will compute the effect size of correlation.  Correlation measures the relationship of two variables, and data science is about exploring relationships in data.*   
 
+**The Problem:**
+Using data from the NSFG, make a scatter plot of birth weight versus mother’s age. Plot percentiles of birth weight versus mother’s age. Compute Pearson’s and Spearman’s correlations. How would you characterize the relationship between these variables?
+
+**My Answer:**
+```Python
+import first
+​
+live, firsts, others = first.MakeFrames()
+live = live.dropna(subset=['agepreg', 'totalwgt_lb'])
+
+agepreg
+# pull out birth weight & mother's age
+birthwt = live.totalwgt_lb
+mom_age = live.agepreg
+
+# Scatter Plot:
+plt.scatter(mom_age, birthwt, alpha=0.1)
+plt.xlabel('mother age')
+plt.ylabel('baby weight (lbs)')
+Text(0,0.5,'baby weight (lbs)')
+```
+![Scatter Plot](7-1_Fig1.png)
+
+A hexbin plot doesn't reveal any patterns.
+
+Now, plot percentile of birth weight vs. mother's age.
+```Python
+# generate groupings by birth weights
+bins = np.arange(2,12,1)
+indices = np.digitize(live.totalwgt_lb, bins)
+wt_groups = live.groupby(indices)
+
+# for each group, compute average mother's age and cdf of weights:
+mean_ages = [group.agepreg.mean() for i, group in wt_groups]
+wt_cdfs = [thinkstats2.Cdf(group.totalwgt_lb) for i, group in wt_groups]
+
+# create percentiles & plot them
+p_tiles = [90, 50, 10]
+for p in p_tiles:
+    wt_ptiles = [cdf.Percentile(p) for cdf in wt_cdfs]
+    thinkplot.Plot(mean_ages, wt_ptiles, label='%dth percentile' % p)
+
+thinkplot.Config(xlabel='mother age (yr)',
+                ylabel='birth wt (lb)',
+                axis=[15,40,0,15],
+                title='Weight range of bins: %d - %d lbs' %(bins[0], bins[len(bins)-1]))
+```
+![Scatter Plot](7-1_Fig2.png)
+
+```Python
+# Compute correlations
+SpearmanCorr(birthwt, mom_age), Corr(birthwt, mom_age)
+```
+
+These variables are not very correlated:
+
+1. The scatter plot shows a roughly horizontal line / relationship.
+2. The correlation coefficients are low.
+3. The percentile plot is nearly vertical for non-extreme  weight values.
+
+
 ### Q8. [Think Stats Chapter 8 Exercise 2](statistics/8-2-sampling_dist.md) (sampling distribution)
 *In the theoretical world, all data related to an experiment or a scientific problem would be available.  In the real world, some subset of that data is available.  This exercise asks you to take samples from an exponential distribution and examine how the standard error and confidence intervals vary with the sample size.*
 
