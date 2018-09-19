@@ -319,7 +319,7 @@ el_cdf = thinkstats2.Cdf(els)
 thinkplot.Cdf(el_cdf)
 thinkplot.Config(xlabel='Lamba', ylabel='CDF')
 ```
-![CDF of L's](8-2_ExpoCDF.png)
+![CDF of L's](8-2-ExpoCDF.png)
 ```Python
 # The 90% CI and the standard error:
 el_cdf.Percentile(5), el_cdf.Percentile(95)
@@ -394,9 +394,92 @@ np.median(new_sample), np.median(sample)
 
 The skew is actually reduced in our higher-upper-bound sample. While the mean is higher (by 3-fold), the standard deviation is also higher (by 5-fold). (The medians are the same.)
 
-
+---
 ### Q10. [Think Stats Chapter 8 Exercise 3](statistics/8-3-scoring.md) (scoring)
 
+**The Problem**
+In games like hockey and soccer, the time between goals is roughly exponential. So you could estimate a team’s goal-scoring rate by observing the number of goals they score in a game. This estimation process is a little different from sampling the time between goals, so let’s see how it works.
+
+Write a function that takes a goal-scoring rate, lam, in goals per game, and simulates a game by generating the time between goals until the total time exceeds 1 game, then returns the number of goals scored.
+
+Write another function that simulates many games, stores the estimates of lam, then computes their mean error and RMSE.
+
+Is this way of making an estimate biased? Plot the sampling distribution of the estimates and the 90% confidence interval. What is the standard error? What happens to sampling error for increasing values of lam?
+
+**My Solution**
+
+Write functions to simulate games
+
+```Python
+
+def GameSim(lam):
+    '''lam is goals per game
+    Returns # of goals scored in a game (60 min)'''
+    t = 0
+    goals = 0
+    while t <= 60:
+        time_between_goals = random.expovariate(lam/60)
+        t += time_between_goals
+        if t <= 60:
+            goals +=1
+        else:
+            break
+    return goals
+
+def MultiGameSimEval(lam, n, m):
+      '''Simulates: n (integer) games, m (integer) times,
+                    with an average of lam (float) goals per game
+      Returns estimates of lam (list), mean error (float),
+              and RMSE (float)
+          '''
+      lams = []
+      for _ in range(m):
+          goals = [GameSim(lam) for _ in range(n)]
+          lams.append(np.mean(goals))
+      return lams, MeanError(lams, lam), RMSE(lams, lam)
+```
+Simulate 10 games, 100 times, at a goal-scoring rate of 2.5 goals per game:
+```Python
+lam_ests, mean_err, std_err = MultiGameSimEval(2.5, 10, 100)
+mean_err, std_err
+(-0.013000000000000006, 0.46914816422959604)
+
+np.mean(lam_ests)
+2.4870000000000005
+
+# Plot sampling distribution:
+lam_cdf = thinkstats2.Cdf(lam_ests)
+thinkplot.Cdf(lam_cdf, label='lambda = 2.5')
+thinkplot.Config(xlabel='lambda', ylabel='CDF')
+```
+![CDF of lams](8-3-ScoreSimCDF.png)
+
+```Python
+  lam_cdf.Percentile(5), lam_cdf.Percentile(90)
+  (1.5, 3.0)```
+
+Impact on sampling error as lambda increases in magnitude:
+```Python
+lam_vals = np.linspace(0.2, 5.0, 25)
+mean_errs = []
+std_errs = []
+
+for lam in lam_vals:
+    l, m, s = MultiGameSimEval(lam, 10, 100)
+    mean_errs.append(m)
+    std_errs.append(s)
+
+plt.plot(lam_vals, mean_errs, label='mean error')
+plt.plot(lam_vals, std_errs, label='std error')
+plt.legend()
+plt.ylabel('error')
+plt.xlabel('lambda')
+```
+![Sampling Error vs. Lambda](8-3-Error_vs_lambda.png)
+
+As lambda get bigger, standard error (RMSE) also increases. Mean error stays constant. 
+
+---
 ### Q11. [Think Stats Chapter 9 Exercise 2](statistics/9-2-resampling.md) (resampling)
 
 ---
