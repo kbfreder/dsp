@@ -214,9 +214,6 @@ Frequentist:
 - Parameters are fixed; they are presented with confidence intervals.
   - probability of the data, given the null hypothesis (H0)
 
-
-
-
 Bayesian stats:
 - The data are fixed.
 - Parameters are random; they are presented with probability intervals.
@@ -290,9 +287,61 @@ These variables are not very correlated:
 2. The correlation coefficients are low.
 3. The percentile plot is nearly vertical for non-extreme  weight values.
 
+---
 
 ### Q8. [Think Stats Chapter 8 Exercise 2](statistics/8-2-sampling_dist.md) (sampling distribution)
 *In the theoretical world, all data related to an experiment or a scientific problem would be available.  In the real world, some subset of that data is available.  This exercise asks you to take samples from an exponential distribution and examine how the standard error and confidence intervals vary with the sample size.*
+
+**The Problem**
+Suppose you draw a sample with size n=10 from an exponential distribution with λ=2. Simulate this experiment 1000 times and plot the sampling distribution of the estimate L. Compute the standard error of the estimate and the 90% confidence interval.
+
+Repeat the experiment with a few different values of n and make a plot of standard error versus n.
+
+**My Solution**
+```Python
+# Write a function to simulate the sampling process and return a list
+# of the L's (estimate of lambda) and the standard error.
+
+def SimulateSampleExpo(lam=2, n=10, iters=1000):
+    els = []
+    for j in range(iters):
+        xs = np.random.exponential(lam, n)
+        L = 1/np.mean(xs)
+        els.append(L)
+    stderr = RMSE(els, lam)
+    return els, stderr
+
+# Run simulations & plot the CDF of the L's:
+lam = 2
+els, stderr = SimulateSampleExpo(lam=lam)
+el_cdf = thinkstats2.Cdf(els)
+
+thinkplot.Cdf(el_cdf)
+thinkplot.Config(xlabel='Lamba', ylabel='CDF')
+```
+![CDF of L's](8-2_ExpoCDF.png)
+```Python
+# The 90% CI and the standard error:
+el_cdf.Percentile(5), el_cdf.Percentile(95)
+(0.32124284348591603, 0.88840034716615901)
+
+stderr
+1.4597650639661728
+
+# Standard Error vs. n:
+ns = range(5,90,5)
+stderrs = []
+for n in ns:
+    stderrs.append(SimulateSampleExpo(lam=lam, n=n)[1])
+
+thinkplot.Plot(ns, stderrs, label='λ = 2')
+thinkplot.Config(xlabel='n', ylabel='standard error')
+```
+![RMSE vs n](8-2-RMSE_vs_n.png)
+
+As n increases, the standard error rises until it plateaus at near 1.50.
+
+---
 
 ### Q9. [Think Stats Chapter 6 Exercise 1](statistics/6-1-household_income.md) (skewness of household income)
 
