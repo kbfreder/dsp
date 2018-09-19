@@ -426,37 +426,36 @@ def GameSim(lam):
             break
     return goals
 
-def MultiGameSimEval(lam, n, m):
-      '''Simulates: n (integer) games, m (integer) times,
-                    with an average of lam (float) goals per game
-      Returns estimates of lam (list), mean error (float),
-              and RMSE (float)
-          '''
-      lams = []
-      for _ in range(m):
-          goals = [GameSim(lam) for _ in range(n)]
-          lams.append(np.mean(goals))
-      return lams, MeanError(lams, lam), RMSE(lams, lam)
+def MultiGameSimEval(lam, m):
+    '''Simulates a game m (integer) times, with an average of lam (float) goals per game
+    Returns estimates of lam (list), mean error (float), and RMSE (float)'''
+    lams = []
+    for _ in range(m):
+        goals = GameSim(lam)
+        lams.append(goals)
+    return lams, MeanError(lams, lam), RMSE(lams, lam)
 ```
 Simulate 10 games, 100 times, at a goal-scoring rate of 2.5 goals per game:
-```Python
-lam_ests, mean_err, std_err = MultiGameSimEval(2.5, 10, 100)
-mean_err, std_err
-(-0.013000000000000006, 0.46914816422959604)
 
-np.mean(lam_ests)
-2.4870000000000005
+```Python
+l, m, s = MultiGameSimEval2(2.5, 1000)
+
+m, s
+(0.029999999999999999, 1.5786069808536893)
+
+np.mean(l)
+2.5299999999999998
 
 # Plot sampling distribution:
-lam_cdf = thinkstats2.Cdf(lam_ests)
-thinkplot.Cdf(lam_cdf, label='lambda = 2.5')
-thinkplot.Config(xlabel='lambda', ylabel='CDF')
+lam_pmf = thinkstats2.Pmf(l)
+thinkplot.Hist(lam_pmf)
+thinkplot.Config(xlabel='goals scored', ylabel='PMF')
 ```
-![CDF of lams](8-3-ScoreSimCDF.png)
+![Sampling Dist](8-3-GoalHist.png)
 
 ```Python
-  lam_cdf.Percentile(5), lam_cdf.Percentile(90)
-  (1.5, 3.0)```
+lam_cdf = thinkstats2.Cdf(l)
+lam_cdf.Percentile(5), lam_cdf.Percentile(90)```
 
 Impact on sampling error as lambda increases in magnitude:
 ```Python
@@ -465,7 +464,7 @@ mean_errs = []
 std_errs = []
 
 for lam in lam_vals:
-    l, m, s = MultiGameSimEval(lam, 10, 100)
+    l, m, s = MultiGameSimEval(lam, 1000)
     mean_errs.append(m)
     std_errs.append(s)
 
@@ -477,7 +476,7 @@ plt.xlabel('lambda')
 ```
 ![Sampling Error vs. Lambda](8-3-Error_vs_lambda.png)
 
-As lambda get bigger, standard error (RMSE) also increases. Mean error stays constant. 
+As lambda get bigger, standard error (RMSE) also increases. Mean error stays constant.
 
 ---
 ### Q11. [Think Stats Chapter 9 Exercise 2](statistics/9-2-resampling.md) (resampling)
