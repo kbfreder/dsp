@@ -214,9 +214,6 @@ Frequentist:
 - Parameters are fixed; they are presented with confidence intervals.
   - probability of the data, given the null hypothesis (H0)
 
-
-
-
 Bayesian stats:
 - The data are fixed.
 - Parameters are random; they are presented with probability intervals.
@@ -230,14 +227,309 @@ The following exercises are optional, but we highly encourage you to complete th
 ### Q7. [Think Stats Chapter 7 Exercise 1](statistics/7-1-weight_vs_age.md) (correlation of weight vs. age)
 *In this exercise, you will compute the effect size of correlation.  Correlation measures the relationship of two variables, and data science is about exploring relationships in data.*   
 
+**The Problem:**
+Using data from the NSFG, make a scatter plot of birth weight versus mother’s age. Plot percentiles of birth weight versus mother’s age. Compute Pearson’s and Spearman’s correlations. How would you characterize the relationship between these variables?
+
+**My Answer:**
+```Python
+import first
+​
+live, firsts, others = first.MakeFrames()
+live = live.dropna(subset=['agepreg', 'totalwgt_lb'])
+
+agepreg
+# pull out birth weight & mother's age
+birthwt = live.totalwgt_lb
+mom_age = live.agepreg
+
+# Scatter Plot:
+plt.scatter(mom_age, birthwt, alpha=0.1)
+plt.xlabel('mother age')
+plt.ylabel('baby weight (lbs)')
+Text(0,0.5,'baby weight (lbs)')
+```
+![Scatter Plot](7-1_Fig1.png)
+
+A hexbin plot doesn't reveal any patterns.
+
+Now, plot percentile of birth weight vs. mother's age.
+```Python
+# generate groupings by mother's age
+bins = np.arange(15, 40, 3)
+indices = np.digitize(live.agepreg, bins)
+age_groups = live.groupby(indices)
+
+# for each group, compute average mother's age and cdf of weights:
+mean_ages = [group.agepreg.mean() for i, group in age_groups]
+wt_cdfs = [thinkstats2.Cdf(group.totalwgt_lb) for i, group in age_groups]
+
+# create percentiles & plot them
+p_tiles = [75, 50, 25]
+for p in p_tiles:
+    wt_ptiles = [cdf.Percentile(p) for cdf in wt_cdfs]
+    thinkplot.Plot(mean_ages, wt_ptiles, label='%dth percentile' % p)
+
+thinkplot.Config(xlabel='mother age (yr)', ylabel='birth wt (lb)',
+                axis=[14,41,5,10])
+```
+![Scatter Plot](7-1_Fig2.png)
+
+```Python
+# Compute correlations
+SpearmanCorr(birthwt, mom_age), Corr(birthwt, mom_age)
+```
+
+These variables are not very correlated:
+
+1. The scatter plot shows a roughly horizontal line / relationship.
+2. The correlation coefficients are low.
+3. The percentile plots do show a slight upward trend until age 39, and then the birth weight drops off sharply for mothers over the age of 40. There are fewer data for older moms, however.
+
+---
+
 ### Q8. [Think Stats Chapter 8 Exercise 2](statistics/8-2-sampling_dist.md) (sampling distribution)
 *In the theoretical world, all data related to an experiment or a scientific problem would be available.  In the real world, some subset of that data is available.  This exercise asks you to take samples from an exponential distribution and examine how the standard error and confidence intervals vary with the sample size.*
 
+**The Problem**
+Suppose you draw a sample with size n=10 from an exponential distribution with λ=2. Simulate this experiment 1000 times and plot the sampling distribution of the estimate L. Compute the standard error of the estimate and the 90% confidence interval.
+
+Repeat the experiment with a few different values of n and make a plot of standard error versus n.
+
+**My Solution**
+```Python
+# Write a function to simulate the sampling process and return a list
+# of the L's (estimate of lambda) and the standard error.
+
+def SimulateSampleExpo(lam=2, n=10, iters=1000):
+    els = []
+    for j in range(iters):
+        xs = np.random.exponential(lam, n)
+        L = 1/np.mean(xs)
+        els.append(L)
+    stderr = RMSE(els, lam)
+    return els, stderr
+
+# Run simulations & plot the CDF of the L's:
+lam = 2
+els, stderr = SimulateSampleExpo(lam=lam)
+el_cdf = thinkstats2.Cdf(els)
+
+thinkplot.Cdf(el_cdf)
+thinkplot.Config(xlabel='Lamba', ylabel='CDF')
+```
+![CDF of L's](8-2-ExpoCDF.png)
+```Python
+# The 90% CI and the standard error:
+el_cdf.Percentile(5), el_cdf.Percentile(95)
+(0.32124284348591603, 0.88840034716615901)
+
+stderr
+1.4597650639661728
+
+# Standard Error vs. n:
+ns = range(5,90,5)
+stderrs = []
+for n in ns:
+    stderrs.append(SimulateSampleExpo(lam=lam, n=n)[1])
+
+thinkplot.Plot(ns, stderrs, label='λ = 2')
+thinkplot.Config(xlabel='n', ylabel='standard error')
+```
+![RMSE vs n](8-2-RMSE_vs_n.png)
+
+As n increases, the standard error rises until it plateaus at near 1.50.
+
+---
+
 ### Q9. [Think Stats Chapter 6 Exercise 1](statistics/6-1-household_income.md) (skewness of household income)
 
+**The Problem**
+
+Compute the median, mean, skewness and Pearson’s skewness of the [Interpolated] sample. What fraction of households reports a taxable income below the mean? How do the results depend on the assumed upper bound?
+
+**My Answer**
+```Python
+# load modules and data
+import thinkstats2
+import numpy as np
+import hinc
+
+income_df = hinc.ReadData()
+log_sample = InterpolateSample(income_df, log_upper=6.0)
+sample = np.power(10, log_sample)
+cdf = thinkstats2.Cdf(sample)
+
+# Compute statistics
+sample.mean(), np.median(sample)
+(74278.707531187203, 51226.933065623722)
+
+thinkstats2.Skewness(sample), thinkstats2.PearsonMedianSkewness(sample)
+(4.9499202444295829, 0.7361258019141782)
+
+# Fraction of household with income below mean:
+cdf[sample.mean()]
+0.66000587956687196
+```
+The assumed upper-bound will impact the mean, standard deviation, and skew. For example, let's re-compute the sample with a higher upper-bound, e.g. 10 million:
+```Python
+new_log_sample = InterpolateSample(income_df, log_upper = 7.0)
+new_sample = np.power(10, new_log_sample)
+new_cdf = thinkstats2.Cdf(new_sample)
+
+thinkstats2.PearsonMedianSkewness(new_sample), thinkstats2.PearsonMedianSkewness(sample)
+(0.39156450927742087, 0.7361258019141782)
+
+new_sample.mean(), sample.mean()
+(124267.39722164697, 74278.707531187203)
+
+np.std(new_sample), np.std(sample)
+(559608.50137434725, 93946.929963478353)
+
+np.median(new_sample), np.median(sample)
+(51226.933065623722, 51226.933065623722)
+
+```
+
+The skew is actually reduced in our higher-upper-bound sample. While the mean is higher (by 3-fold), the standard deviation is also higher (by 5-fold). (The medians are the same.)
+
+---
 ### Q10. [Think Stats Chapter 8 Exercise 3](statistics/8-3-scoring.md) (scoring)
 
+**The Problem**
+
+In games like hockey and soccer, the time between goals is roughly exponential. So you could estimate a team’s goal-scoring rate by observing the number of goals they score in a game. This estimation process is a little different from sampling the time between goals, so let’s see how it works.
+
+Write a function that takes a goal-scoring rate, lam, in goals per game, and simulates a game by generating the time between goals until the total time exceeds 1 game, then returns the number of goals scored.
+
+Write another function that simulates many games, stores the estimates of lam, then computes their mean error and RMSE.
+
+Is this way of making an estimate biased? Plot the sampling distribution of the estimates and the 90% confidence interval. What is the standard error? What happens to sampling error for increasing values of lam?
+
+**My Solution**
+
+Write functions to simulate games
+
+```Python
+
+def GameSim(lam):
+    '''lam is goals per game
+    Returns # of goals scored in a game (60 min)'''
+    t = 0
+    goals = 0
+    while t <= 60:
+        time_between_goals = random.expovariate(lam/60)
+        t += time_between_goals
+        if t <= 60:
+            goals +=1
+        else:
+            break
+    return goals
+
+def MultiGameSimEval(lam, m):
+    '''Simulates a game m (integer) times, with an average of lam (float) goals per game
+    Returns estimates of lam (list), mean error (float), and RMSE (float)'''
+    lams = []
+    for _ in range(m):
+        goals = GameSim(lam)
+        lams.append(goals)
+    return lams, MeanError(lams, lam), RMSE(lams, lam)
+```
+Simulate 10 games, 100 times, at a goal-scoring rate of 2.5 goals per game:
+
+```Python
+l, m, s = MultiGameSimEval2(2.5, 1000)
+
+m, s
+(0.029999999999999999, 1.5786069808536893)
+
+np.mean(l)
+2.5299999999999998
+
+# Plot sampling distribution:
+lam_pmf = thinkstats2.Pmf(l)
+thinkplot.Hist(lam_pmf)
+thinkplot.Config(xlabel='goals scored', ylabel='PMF')
+```
+![Sampling Dist](8-3-GoalHist.png)
+
+```Python
+lam_cdf = thinkstats2.Cdf(l)
+lam_cdf.Percentile(5), lam_cdf.Percentile(90)```
+
+Impact on sampling error as lambda increases in magnitude:
+```Python
+lam_vals = np.linspace(0.2, 5.0, 25)
+mean_errs = []
+std_errs = []
+
+for lam in lam_vals:
+    l, m, s = MultiGameSimEval(lam, 1000)
+    mean_errs.append(m)
+    std_errs.append(s)
+
+plt.plot(lam_vals, mean_errs, label='mean error')
+plt.plot(lam_vals, std_errs, label='std error')
+plt.legend()
+plt.ylabel('error')
+plt.xlabel('lambda')
+```
+![Sampling Error vs. Lambda](8-3-Error_vs_lambda.png)
+
+As lambda get bigger, standard error (RMSE) also increases. Mean error stays constant.
+
+---
 ### Q11. [Think Stats Chapter 9 Exercise 2](statistics/9-2-resampling.md) (resampling)
+
+**The Problem**
+In Section 9.3, we simulated the null hypothesis by permutation; that is, we treated the observed values as if they represented the entire population, and randomly assigned the members of the population to the two groups.
+
+An alternative is to use the sample to estimate the distribution for the population, then draw a random sample from that distribution. This process is called resampling. There are several ways to implement resampling, but one of the simplest is to draw a sample with replacement from the observed values, as in Section 9.10.
+
+Write a class named DiffMeansResample that inherits from DiffMeansPermute and overrides RunModel to implement resampling, rather than permutation.
+
+Use this model to test the differences in pregnancy length and birth weight. How much does the model affect the results?
+
+**My Solution**
+
+```Python
+class DiffMeansResample(DiffMeansPermute):
+
+    def RunModel(self):
+        """Run the model of the null hypothesis.
+
+        returns: simulated data
+        """
+        #np.random.shuffle(self.pool)
+        data = np.random.choice(self.pool, self.n, replace=True), np.random.choice(self.pool, self.m, replace=True)
+        return data
+
+# Pregnancy Length
+preglen_data = firsts.prglngth.values, others.prglngth.values
+ht_resamp = DiffMeansResample(preglen_data)
+ht_perm = DiffMeansPermute(preglen_data)
+
+print(ht_resamp.PValue(), ht_perm.PValue())
+print(ht_resamp.MaxTestStat(), ht_perm.MaxTestStat())
+print(ht_resamp.actual)
+
+0.168 0.184
+0.194908247232 0.22251009844
+0.0780372667775
+
+# Birth weight
+data = firsts.totalwgt_lb.dropna().values, others.totalwgt_lb.dropna().values
+ht_resamp = DiffMeansResample(data)
+ht_perm = DiffMeansPermute(data)
+
+print(ht_resamp.PValue(), ht_perm.PValue())
+print(ht_resamp.MaxTestStat(), ht_perm.MaxTestStat())
+print(ht_resamp.actual)
+
+0.0 0.0
+0.0937366968957 0.100723279498
+0.124761184535
+```
+Resampling doesn't make much difference
 
 ---
 
