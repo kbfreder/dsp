@@ -254,25 +254,23 @@ A hexbin plot doesn't reveal any patterns.
 
 Now, plot percentile of birth weight vs. mother's age.
 ```Python
-# generate groupings by birth weights
-bins = np.arange(2,12,1)
-indices = np.digitize(live.totalwgt_lb, bins)
-wt_groups = live.groupby(indices)
+# generate groupings by mother's age
+bins = np.arange(15, 40, 3)
+indices = np.digitize(live.agepreg, bins)
+age_groups = live.groupby(indices)
 
 # for each group, compute average mother's age and cdf of weights:
-mean_ages = [group.agepreg.mean() for i, group in wt_groups]
-wt_cdfs = [thinkstats2.Cdf(group.totalwgt_lb) for i, group in wt_groups]
+mean_ages = [group.agepreg.mean() for i, group in age_groups]
+wt_cdfs = [thinkstats2.Cdf(group.totalwgt_lb) for i, group in age_groups]
 
 # create percentiles & plot them
-p_tiles = [90, 50, 10]
+p_tiles = [75, 50, 25]
 for p in p_tiles:
     wt_ptiles = [cdf.Percentile(p) for cdf in wt_cdfs]
     thinkplot.Plot(mean_ages, wt_ptiles, label='%dth percentile' % p)
 
-thinkplot.Config(xlabel='mother age (yr)',
-                ylabel='birth wt (lb)',
-                axis=[15,40,0,15],
-                title='Weight range of bins: %d - %d lbs' %(bins[0], bins[len(bins)-1]))
+thinkplot.Config(xlabel='mother age (yr)', ylabel='birth wt (lb)',
+                axis=[14,41,5,10])
 ```
 ![Scatter Plot](7-1_Fig2.png)
 
@@ -285,7 +283,7 @@ These variables are not very correlated:
 
 1. The scatter plot shows a roughly horizontal line / relationship.
 2. The correlation coefficients are low.
-3. The percentile plot is nearly vertical for non-extreme  weight values.
+3. The percentile plots do show a slight upward trend until age 39, and then the birth weight drops off sharply for mothers over the age of 40. There are fewer data in the tails, though.
 
 ---
 
@@ -398,6 +396,7 @@ The skew is actually reduced in our higher-upper-bound sample. While the mean is
 ### Q10. [Think Stats Chapter 8 Exercise 3](statistics/8-3-scoring.md) (scoring)
 
 **The Problem**
+
 In games like hockey and soccer, the time between goals is roughly exponential. So you could estimate a team’s goal-scoring rate by observing the number of goals they score in a game. This estimation process is a little different from sampling the time between goals, so let’s see how it works.
 
 Write a function that takes a goal-scoring rate, lam, in goals per game, and simulates a game by generating the time between goals until the total time exceeds 1 game, then returns the number of goals scored.
@@ -480,6 +479,57 @@ As lambda get bigger, standard error (RMSE) also increases. Mean error stays con
 
 ---
 ### Q11. [Think Stats Chapter 9 Exercise 2](statistics/9-2-resampling.md) (resampling)
+
+**The Problem**
+In Section 9.3, we simulated the null hypothesis by permutation; that is, we treated the observed values as if they represented the entire population, and randomly assigned the members of the population to the two groups.
+
+An alternative is to use the sample to estimate the distribution for the population, then draw a random sample from that distribution. This process is called resampling. There are several ways to implement resampling, but one of the simplest is to draw a sample with replacement from the observed values, as in Section 9.10.
+
+Write a class named DiffMeansResample that inherits from DiffMeansPermute and overrides RunModel to implement resampling, rather than permutation.
+
+Use this model to test the differences in pregnancy length and birth weight. How much does the model affect the results?
+
+**My Solution**
+
+```Python
+class DiffMeansResample(DiffMeansPermute):
+
+    def RunModel(self):
+        """Run the model of the null hypothesis.
+
+        returns: simulated data
+        """
+        #np.random.shuffle(self.pool)
+        data = np.random.choice(self.pool, self.n, replace=True), np.random.choice(self.pool, self.m, replace=True)
+        return data
+
+# Pregnancy Length
+preglen_data = firsts.prglngth.values, others.prglngth.values
+ht_resamp = DiffMeansResample(preglen_data)
+ht_perm = DiffMeansPermute(preglen_data)
+
+print(ht_resamp.PValue(), ht_perm.PValue())
+print(ht_resamp.MaxTestStat(), ht_perm.MaxTestStat())
+print(ht_resamp.actual)
+
+0.168 0.184
+0.194908247232 0.22251009844
+0.0780372667775
+
+# Birth weight
+data = firsts.totalwgt_lb.dropna().values, others.totalwgt_lb.dropna().values
+ht_resamp = DiffMeansResample(data)
+ht_perm = DiffMeansPermute(data)
+
+print(ht_resamp.PValue(), ht_perm.PValue())
+print(ht_resamp.MaxTestStat(), ht_perm.MaxTestStat())
+print(ht_resamp.actual)
+
+0.0 0.0
+0.0937366968957 0.100723279498
+0.124761184535
+```
+Resampling doesn't make much difference
 
 ---
 
