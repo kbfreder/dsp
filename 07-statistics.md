@@ -109,7 +109,7 @@ thinkplot.PrePlot(2)
 thinkplot.Pmfs([actual_pmf, bias_pmf])
 thinkplot.Config(xlabel='# children in family', ylabel='probability')
 ```
-![Image of plot](https://github.com/kbfreder/dsp/blob/master/statistics/3-1-fig.png)
+![Image of plot](img/3-1-fig.png)
 
 We expect the PMFs to align for n=1 children.
 
@@ -143,7 +143,7 @@ thinkplot.Config(xlabel='value', ylabel='PMF',
                  axis = [-0.1, 1.1, 0, 0.01])
 ```
 
-![PMF Figure](4-2-PMF_Fig.png)
+![PMF Figure](img/4-2-PMF_Fig.png)
 
 The PMF looks like a block. We would expect a uniform distribution to yield a step function for its PMF. However, note that the probabilities are extremely low because of the large number of values (1000) in our dataset; the maximum probability of any given value is only 0.001.
 
@@ -156,7 +156,7 @@ thinkplot.Cdf(samp2_cdf)
 thinkplot.Config(xlabel='value', ylabel='CDF',
                  axis = [-0.1, 1.1, -0.1, 1.1])
 ```
-![CDF Figure](4-2-CDF_Fig.png)
+![CDF Figure](img/4-2-CDF_Fig.png)
 
 The CDF is a straight line for uniform distributions. Our random sampling yields a more or less straight line, confirming the proper functioning of `random.random`.
 
@@ -260,7 +260,7 @@ plt.xlabel('mother age')
 plt.ylabel('baby weight (lbs)')
 Text(0,0.5,'baby weight (lbs)')
 ```
-![Scatter Plot](7-1_Fig1.png)
+![Scatter Plot](img/7-1_Fig1.png)
 
 Plotting the data using a hexbin plot doesn't reveal any patterns, either.
 
@@ -284,7 +284,7 @@ for p in p_tiles:
 thinkplot.Config(xlabel='mother age (yr)', ylabel='birth wt (lb)',
                 axis=[14,41,5,10])
 ```
-![Scatter Plot](7-1_Fig2.png)
+![Scatter Plot](img/7-1_Fig2.png)
 
 ```Python3
 # Compute correlations
@@ -330,7 +330,7 @@ el_cdf = thinkstats2.Cdf(els)
 thinkplot.Cdf(el_cdf)
 thinkplot.Config(xlabel='Lamba', ylabel='CDF')
 ```
-![CDF of L's](8-2-ExpoCDF.png)
+![CDF of L's](img/8-2-ExpoCDF.png)
 ```Python3
 # The 90% CI and the standard error:
 el_cdf.Percentile(5), el_cdf.Percentile(95)
@@ -348,7 +348,7 @@ for n in ns:
 thinkplot.Plot(ns, stderrs, label='λ = 2')
 thinkplot.Config(xlabel='n', ylabel='standard error')
 ```
-![RMSE vs n](8-2-RMSE_vs_n.png)
+![RMSE vs n](img/8-2-RMSE_vs_n.png)
 
 As n increases, the standard error rises until it plateaus at near 1.50.
 
@@ -463,7 +463,7 @@ lam_pmf = thinkstats2.Pmf(l)
 thinkplot.Hist(lam_pmf)
 thinkplot.Config(xlabel='goals scored', ylabel='PMF')
 ```
-![Sampling Dist](8-3-GoalHist.png)
+![Sampling Dist](img/8-3-GoalHist.png)
 
 ```Python3
 lam_cdf = thinkstats2.Cdf(l)
@@ -486,7 +486,7 @@ plt.legend()
 plt.ylabel('error')
 plt.xlabel('lambda')
 ```
-![Sampling Error vs. Lambda](8-3-Error_vs_lambda.png)
+![Sampling Error vs. Lambda](img/8-3-Error_vs_lambda.png)
 
 As lambda get bigger, standard error (RMSE) also increases. Mean error stays constant.
 
