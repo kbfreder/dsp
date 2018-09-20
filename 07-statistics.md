@@ -283,7 +283,7 @@ These variables are not very correlated:
 
 1. The scatter plot shows a roughly horizontal line / relationship.
 2. The correlation coefficients are low.
-3. The percentile plots do show a slight upward trend until age 39, and then the birth weight drops off sharply for mothers over the age of 40. There are fewer data in the tails, though.
+3. The percentile plots do show a slight upward trend until age 39, and then the birth weight drops off sharply for mothers over the age of 40. There are fewer data for older moms, however.
 
 ---
 
