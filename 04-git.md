@@ -1,12 +1,12 @@
 # Using Git at Command Line
 
-## :boom: Git 10-minute Video :boom: 
+## :boom: Git 10-minute Video :boom:
 
-**Watch this [10-minute video, *Getting Started with Git*](https://vimeo.com/178481263?mc_cid=06d951b22e&mc_eid=[UNIQID]), which covers all the steps below.** 
+**Watch this [10-minute video, *Getting Started with Git*](https://vimeo.com/178481263?mc_cid=06d951b22e&mc_eid=[UNIQID]), which covers all the steps below.**
 The [list of commands used in the video](/resources/git_video_history.md) are available.
 
 
-Before you start, please take 15 minutes to [Try Git](https://try.github.io/levels/1/challenges/1). It does a great job at explaining the basic concepts, which we will be using for this part of the pre-work. 
+Before you start, please take 15 minutes to [Try Git](https://try.github.io/levels/1/challenges/1). It does a great job at explaining the basic concepts, which we will be using for this part of the pre-work.
 
 ---
 
@@ -22,7 +22,7 @@ This repository is `thisismetis/dsp`. Your forked copy will be `your_github_user
 
 ## Step 1: Clone the repository locally
 
-This makes a copy of the repository in your laptop. Click on the clipboard image on the right sidebar to copy the HTTPS clone URL. 
+This makes a copy of the repository in your laptop. Click on the clipboard image on the right sidebar to copy the HTTPS clone URL.
 
 ![edit](img/git_clone.png)
 
@@ -54,9 +54,9 @@ You will learn how to complete the challenges in your text editor and then `push
 
 There is some important terminology to consider for this part before we move on.  
 
-There are three main states that your files can reside in: 
+There are three main states that your files can reside in:
 
-- **Modified** means that there's been changes to the file but it's not committed yet. 
+- **Modified** means that there's been changes to the file but it's not committed yet.
 
 - **Staged** means that you have marked a file to go into your next commit snapshot.
 
@@ -66,8 +66,8 @@ There are three main states that your files can reside in:
 The basic workflow goes something like this:
 
 1. Modify the files.
-2. Stage the files. 
-3. Do a commit. 
+2. Stage the files.
+3. Do a commit.
 4. Push up to GitHub.  
 
 There's four basic commands you should get familiar with:
@@ -88,12 +88,12 @@ Go to your terminal. If you type `$ git status`, you should get a message like t
 
 ![gst](img/git_status.png)
 
-This means that you have **modified** the files that appear there. This is what is called the **staging** area. Any files you modify will appear here. 
+This means that you have **modified** the files that appear there. This is what is called the **staging** area. Any files you modify will appear here.
 
 
 ### 2b. `git add`
 
-If you are ready with the changes, then it's time to `git add` the files. 
+If you are ready with the changes, then it's time to `git add` the files.
 
 You can add all files by typing `$ git add .`, or you can add one by one like above by specifying the path after `$ git add`.  
 
@@ -103,7 +103,7 @@ If you type `$ git status` again, you should get something like this:
 
 ![add](img/git_post_status.png)  
 
-As you can see, your changes are now ready to be `commit`ted. 
+As you can see, your changes are now ready to be `commit`ted.
 
 ### 2c. `git commit`
 
@@ -125,7 +125,7 @@ And you're done! (for now)
 
 You can also use this workflow to add images to your repository. All you need to do is add them to the _img_ folder, and they will be added to the staging area.   
 
-GitHub has some great documentation, along with this really awesome [cheat sheet](https://education.github.com/git-cheat-sheet-education.pdf). 
+GitHub has some great documentation, along with this really awesome [cheat sheet](https://education.github.com/git-cheat-sheet-education.pdf).
 
 ---
 
@@ -137,4 +137,4 @@ To get a complete understanding of `git`, you should read [Pro Git](http://git-s
 
 [<img src="img/pro_git.png" title="Pro Git" width="250" />](http://git-scm.com/book/en/v2)
 
->> I'm git'ing the hang of this!
+*I'm git'ing the hang of this!*
